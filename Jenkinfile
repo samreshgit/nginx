@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+	stages {
+        stage('git-pull') {
+            steps {
+				git branch: "${branchName}", credentialsId: 'github_id', url: 'https://bitbucket.pearson.com/scm/sii/gps-dpwwebapp.git'
+			}
+		}
+		stage("DockerImage-ECRPush") {
+			steps {
+				withAWS(credentials: "${awsCred}", region: "${regName}") {
+				sh "aws ecr get-login-password --region ${regName} | docker login --username AWS --password-stdin ${ecrPwd}"
+				sh "docker build -t ${buildTag} ."
+				sh "docker tag ${buildTag} ${ecrURI}:${remoteImageTag}"
+				sh "docker push ${ecrURI}:${remoteImageTag}"
+        }
+      }
+    }
+	}
+	}
