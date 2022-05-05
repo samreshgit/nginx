@@ -3,7 +3,7 @@ pipeline {
 	stages {
         stage('git-pull') {
             steps {
-				git branch: "${branchName}", credentialsId: 'github_id', url: 'https://github.com/samreshgit/nginx.git'
+				git branch: 'master', credentialsId: 'github_id', url: 'https://github.com/samreshgit/nginx.git'
 			}
 		}
 		stage("DockerImage-ECRPush") {
