@@ -3,17 +3,15 @@ pipeline {
 	stages {
         stage('git-pull') {
             steps {
-				git branch: "${branchName}", credentialsId: 'github_id', url: 'https://github.com/samreshgit/nginx.git'
+				git branch: "${branchName}", credentialsId: 'UORAFOO', url: 'https://bitbucket.pearson.com/scm/sii/gps-dpwwebapp.git'
 			}
 		}
 		stage("DockerImage-ECRPush") {
 			steps {
-				withAWS(credentials: "${awsCred}", region: "${regName}") {
-				sh "aws ecr get-login-password --region ${regName} | docker login --username AWS --password-stdin ${ecrPwd}"
-				sh "docker build -t ${buildTag} ."
-				sh "docker tag ${buildTag} ${ecrURI}:${remoteImageTag}"
-				sh "docker push ${ecrURI}:${remoteImageTag}"
-        }
+				sh "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z5k2d8b9"
+				sh "docker build -t myrepo ."
+				sh "docker tag myrepo:latest public.ecr.aws/z5k2d8b9/myrepo:latest"
+				sh "docker push public.ecr.aws/z5k2d8b9/myrepo:latest"
       }
     }
 	}
