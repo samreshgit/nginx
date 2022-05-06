@@ -1,8 +1,3 @@
-############################################################
-# Dockerfile to build Nginx Installed Containers
-# Based on Ubuntu
-############################################################
-
 # Set the base image to Ubuntu
 FROM ubuntu
 
@@ -21,7 +16,8 @@ RUN apt-get update
 RUN apt-get install -y nano wget dialog net-tools
 
 # Download and Install Nginx
-RUN apt-get install -y nginx  
+RUN apt-get install -y nginx
+COPY ./index.html /var/www/html
 
 # Remove the default Nginx configuration file
 #RUN rm -v /etc/nginx/nginx.conf
@@ -33,8 +29,9 @@ RUN apt-get install -y nginx
 #RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # Expose ports
-EXPOSE 8081
+EXPOSE 80
 
 # Set the default command to execute
 # when creating a new container
-CMD service nginx start
+#CMD service nginx start
+CMD ["nginx", "-g", "daemon off;"]
